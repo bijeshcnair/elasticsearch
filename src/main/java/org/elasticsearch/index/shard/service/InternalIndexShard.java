@@ -371,14 +371,14 @@ public class InternalIndexShard extends AbstractIndexShardComponent implements I
         DocumentMapper docMapper = mapperService.documentMapperWithAutoCreate(source.type());
         ParsedDocument doc = docMapper.parse(source);
         return new Engine.Create(docMapper, docMapper.uidMapper().term(doc.uid().stringValue()), doc).startTime(startTime)
-                .chanHaveDuplicates(state != IndexShardState.STARTED);
+                .canHaveDuplicates(state != IndexShardState.STARTED);
     }
 
     @Override
     public ParsedDocument create(Engine.Create create) throws ElasticsearchException {
         writeAllowed(create.origin());
         create = indexingService.preCreate(create);
-        create.chanHaveDuplicates(state != IndexShardState.STARTED);
+        create.canHaveDuplicates(state != IndexShardState.STARTED);
         if (logger.isTraceEnabled()) {
             logger.trace("index [{}][{}]{}", create.type(), create.id(), create.docs());
         }
